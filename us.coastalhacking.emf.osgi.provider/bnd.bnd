@@ -1,0 +1,17 @@
+-buildpath: \
+	osgi.annotation;version=6.0.1,\
+	osgi.core;version=6.0,\
+	osgi.cmpn;version=6.0,\
+	us.coastalhacking.emf.osgi.api;version=latest,\
+	org.eclipse.emf.common;version=2.13,\
+	org.eclipse.emf.ecore;version=2.13
+
+-testpath: \
+	${junit},\
+	${mockito}
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Version: 0.0.0.${tstamp}
+Private-Package: us.coastalhacking.emf.osgi.provider
