@@ -1,78 +1,20 @@
 package us.coastalhacking.emf.osgi.provider;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EPackage;
 import org.junit.Test;
-import org.osgi.service.log.LogService;
 
 import us.coastalhacking.emf.osgi.api.EmfOsgiApi.Property;
 
 @SuppressWarnings("serial")
 public class EPackageRegistryProviderTest extends EPackageRegistryProvider {
-
-	@Test
-	public void shouldGetEPackageEFactory() {
-		EPackageRegistryProvider provider = new EPackageRegistryProvider();
-		EPackage descriptor = mock(EPackage.class);
-		EFactory expected = mock(EFactory.class);
-		when(descriptor.getEFactoryInstance()).thenReturn(expected);
-		String key = "a.b.c";
-		provider.put(key, descriptor);
-		EFactory actual = provider.getEFactory(key);
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void shouldGetEPackageDescriptorEFactory() {
-		EPackageRegistryProvider provider = new EPackageRegistryProvider();
-		EPackage.Descriptor descriptor = mock(EPackage.Descriptor.class);
-		EFactory expected = mock(EFactory.class);
-		when(descriptor.getEFactory()).thenReturn(expected);
-		String key = "a.b.c";
-		provider.put(key, descriptor);
-		EFactory actual = provider.getEFactory(key);
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void shouldNotGetEFactory() {
-		EPackageRegistryProvider provider = new EPackageRegistryProvider();
-		assertNull(provider.getEFactory("a.b.c"));
-	}
-
-	@Test
-	public void shouldGetEPackage() {
-		EPackageRegistryProvider provider = new EPackageRegistryProvider();
-		EPackage expected = mock(EPackage.class);
-		String key = "a.b.c";
-		provider.put(key, expected);
-		EPackage actual = provider.getEPackage(key);
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void shouldGetEPackageDescriptor() {
-		EPackageRegistryProvider provider = new EPackageRegistryProvider();
-		EPackage.Descriptor descriptor = mock(EPackage.Descriptor.class);
-		EPackage expected = mock(EPackage.class);
-		when(descriptor.getEPackage()).thenReturn(expected);
-		String key = "a.b.c";
-		provider.put(key, expected);
-		EPackage actual = provider.getEPackage(key);
-		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void shouldNotGetEPackage() {
-		EPackageRegistryProvider provider = new EPackageRegistryProvider();
-		assertNull(provider.getEPackage("a.b.c"));
-	}
 
 	@Test
 	public void shouldGetUri() {
@@ -146,44 +88,6 @@ public class EPackageRegistryProviderTest extends EPackageRegistryProvider {
 		provider.unsetEPackageDescriptor(descriptor, props);
 		assertFalse(provider.containsKey(nsUri));
 		assertEquals(0, provider.size());
-
-	}
-
-	@Test
-	public void shouldPutEPackageDescriptor() {
-		EPackageRegistryProvider provider = new EPackageRegistryProvider();
-		provider.put("a.b.c", mock(EPackage.Descriptor.class));
-	}
-
-	@Test
-	public void shouldPutEPackage() {
-		EPackageRegistryProvider provider = new EPackageRegistryProvider();
-		provider.put("a.b.c", mock(EPackage.class));
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void shouldNotPut() {
-		EPackageRegistryProvider provider = new EPackageRegistryProvider();
-		provider.logger = mock(LogService.class);
-		provider.put("a.b.c", new Object());
-	}
-
-	@Test
-	public void shouldPutAll() {
-		Map<String, Object> map = new HashMap<>();
-		map.put("a.b.c", mock(EPackage.class));
-		map.put("c.b.a", mock(EPackage.Descriptor.class));
-		EPackageRegistryProvider provider = new EPackageRegistryProvider();
-		provider.putAll(map);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void shouldNotPutAll() {
-		Map<String, Object> map = new HashMap<>();
-		map.put("a.b.c", new Object());
-		EPackageRegistryProvider provider = new EPackageRegistryProvider();
-		provider.logger = mock(LogService.class);
-		provider.putAll(map);
 	}
 
 }

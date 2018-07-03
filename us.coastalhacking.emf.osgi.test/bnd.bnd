@@ -46,7 +46,8 @@ javac.target: 1.8
 	org.apache.servicemix.bundles.junit;version='[4.12.0,4.12.1)',\
 	org.mockito.mockito-core;version='[2.13.0,2.13.1)',\
 	org.objenesis;version='[2.6.0,2.6.1)',\
-	us.coastalhacking.emf.osgi.test;version=snapshot
+	us.coastalhacking.emf.osgi.test;version=snapshot,\
+	us.coastalhacking.emf.osgi.impl;version=snapshot
 
 Bundle-Version: 0.0.0.${tstamp}
 Private-Package: us.coastalhacking.emf.osgi.test
@@ -54,6 +55,7 @@ Private-Package: us.coastalhacking.emf.osgi.test
 # Needed for Mockito's mocking to work
 -runsystempackages.objenesis: sun.misc,sun.reflect
 
+ Useful for troubleshooting
 -runproperties: \
 	osgi.console=,\
 	osgi.console.enable.builtin=false

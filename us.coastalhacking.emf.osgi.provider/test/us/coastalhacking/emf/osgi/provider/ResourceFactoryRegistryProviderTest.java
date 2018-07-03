@@ -1,6 +1,7 @@
 package us.coastalhacking.emf.osgi.provider;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -17,7 +18,7 @@ public class ResourceFactoryRegistryProviderTest extends ResourceFactoryRegistry
 
 	@Test
 	public void shouldSetUriConverter() {
-		ResourceFactoryRegistryProvider provider = new ResourceFactoryRegistryProvider();
+		ResourceFactoryRegistryProviderTest provider = new ResourceFactoryRegistryProviderTest();
 		URIConverter expected = mock(URIConverter.class);
 		provider.setUriConverter(expected);
 		assertEquals(expected, provider.getURIConverter());
@@ -25,9 +26,9 @@ public class ResourceFactoryRegistryProviderTest extends ResourceFactoryRegistry
 
 	@Test
 	public void shouldUnsetUriConverter() {
-		ResourceFactoryRegistryProvider provider = new ResourceFactoryRegistryProvider();
+		ResourceFactoryRegistryProviderTest provider = new ResourceFactoryRegistryProviderTest();
 		provider.unsetUriConverter(mock(URIConverter.class));
-		assertEquals(URIConverter.INSTANCE, provider.getURIConverter());
+		assertNull(provider.getURIConverter());
 	}
 
 	@Test

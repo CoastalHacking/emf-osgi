@@ -20,7 +20,7 @@ public interface EmfOsgiApi {
 		String PID = "org.eclipse.emf.ecore.resource.ResourceSet.pid";
 
 		/**
-		 * Recommended reference names to be used by ResourceSet providers
+		 * Reference names used by compliant ResourceSet providers
 		 */
 		@interface Reference {
 			String URI_CONVERTER = "emf.resourceset.uriconverter";
@@ -29,6 +29,10 @@ public interface EmfOsgiApi {
 			String EPACKAGE_REGISTRY_TARGET = "emf.resourceset.epackageregistry.target";
 			String RESOURCE_FACTORY_REGISTRY = "emf.resourceset.resourcefactoryregistry";
 			String RESOURCE_FACTORY_REGISTRY_TARGET = "emf.resourceset.resourcefactoryregistry.target";
+			String ADAPTER_FACTORY = "emf.resourceset.adapterfactory";
+			String ADAPTER_FACTORY_TARGET = "emf.resourceset.adapterfactory.target";
+			String RESOURCE = "emf.resourceset.resource";
+			String RESOURCE_TARGET = "emf.resourceset.resource.target";
 		}
 	}
 
@@ -38,6 +42,16 @@ public interface EmfOsgiApi {
 	 */
 	@interface URIConverter {
 		String PID = "org.eclipse.emf.ecore.resource.URIConverter.pid";
+		
+		/**
+		 * Reference names used by compliant URIConverter providers
+		 */
+		@interface Reference {
+			String URI_HANDLERS = "emf.uriconverter.urihandlers";
+			String URI_HANDLERS_TARGET = "emf.uriconverter.urihandlers.target";
+			String CONTENT_HANDLERS = "emf.uriconverter.contenthandlers";
+			String CONTENT_HANDLERS_TARGET = "emf.uriconverter.contenthandlers.target";
+		}
 	}
 
 	/**
@@ -48,13 +62,16 @@ public interface EmfOsgiApi {
 		String PID = "org.eclipse.emf.ecore.EPackage.Registry.pid";
 
 		/**
-		 * Recommended reference names to be used by EPackage.Registry providers
+		 * Reference names used by compliant EPackage.Registry providers
 		 */
 		@interface Reference {
-			String EPACKAGES = "emf.epackage.registry.epackages";
-			String EPACKAGES_TARGET = "emf.epackage.registry.epackages.target";
-			String EPACKAGE_DESCRIPTORS = "emf.epackage.registry.epackagedescriptors";
-			String EPACKAGE_DESCRIPTORS_TARGET = "emf.epackage.registry.epackagedescriptors.target";
+			String EPACKAGES = "emf.epackageregistry.epackages";
+			String EPACKAGES_TARGET = "emf.epackageregistry.epackages.target";
+			String EPACKAGE_DESCRIPTORS = "emf.epackageregistry.epackagedescriptors";
+			String EPACKAGE_DESCRIPTORS_TARGET = "emf.epackageregistry.epackagedescriptors.target";
+			String DELEGATE = "emf.epackageregistry.delegate";
+			String DELEGATE_TARGET = "emf.epackageregistry.delegate.target";
+			String DELEGATE_TARGET_DEFAULT = "(delegate=true)";
 		}
 	}
 
@@ -66,7 +83,7 @@ public interface EmfOsgiApi {
 		String PID = "org.eclipse.emf.ecore.resource.Resource.Factory.Registry.pid";
 
 		/**
-		 * Recommended reference names to be used by Resource.Factory.Registry providers
+		 * Reference names used by compliant Resource.Factory.Registry providers
 		 */
 		@interface Reference {
 			String RESOURCE_FACTORIES = "emf.resource.factory.registry.resourcefactories";

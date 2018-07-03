@@ -1,87 +1,108 @@
 package us.coastalhacking.emf.osgi.provider;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.util.DelegatingEList;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EPackage.Registry;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Factory;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIConverter;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import us.coastalhacking.emf.osgi.api.EmfOsgiApi;
+import us.coastalhacking.emf.osgi.impl.ConcurrentResourceSetImpl;
 
 @Component(configurationPid = EmfOsgiApi.ResourceSet.PID, configurationPolicy = ConfigurationPolicy.OPTIONAL, service = ResourceSet.class)
-public class ResourceSetProvider extends ResourceSetImpl {
+public class ResourceSetProvider extends ConcurrentResourceSetImpl {
 
-	// protected super member 'converter' isn't marked as volatile, mask it
-	private volatile URIConverter converter;
-	private volatile EPackage.Registry ePackageRegistry;
-	private volatile Factory.Registry factoryRegistry;
+	// mask, declared as volatile
+	protected volatile URIConverter converter;
+	protected volatile EPackage.Registry ePackageRegistry;
+	protected volatile Factory.Registry factoryRegistry;
+
+	protected final EList<AdapterFactory> delegatingFactories = new DelegatingEList<AdapterFactory>() {
+
+		private static final long serialVersionUID = 1L;
+		private final List<AdapterFactory> adapterFactories = new CopyOnWriteArrayList<>();
+
+		@Override
+		protected List<AdapterFactory> delegateList() {
+			return adapterFactories;
+		}
+	};
 
 	@Reference(name = EmfOsgiApi.ResourceSet.Reference.URI_CONVERTER, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
 	@Override
 	public void setURIConverter(URIConverter uriConverter) {
-		this.converter = uriConverter;
+		super.setURIConverter(uriConverter);
 	}
 
-	void unsetURIConverter(URIConverter converter) {
+	protected void unsetURIConverter(URIConverter converter) {
 		// Do not delegate to global instance
+		// This varies from ResourceSetImpl since it's now nullable
 		this.converter = null;
-	}
-
-	@Override
-	public URIConverter getURIConverter() {
-		return this.converter;
 	}
 
 	@Reference(name = EmfOsgiApi.ResourceSet.Reference.EPACKAGE_REGISTRY, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
 	@Override
 	public void setPackageRegistry(EPackage.Registry packageRegistry) {
-		this.ePackageRegistry = packageRegistry;
+		super.setPackageRegistry(packageRegistry);
 	}
 
-	void unsetPackageRegistry(EPackage.Registry packageRegistry) {
+	protected void unsetPackageRegistry(EPackage.Registry packageRegistry) {
 		this.ePackageRegistry = null;
-	}
-
-	@Override
-	public Registry getPackageRegistry() {
-		return ePackageRegistry;
 	}
 
 	@Reference(name = EmfOsgiApi.ResourceSet.Reference.RESOURCE_FACTORY_REGISTRY, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
 	@Override
 	public void setResourceFactoryRegistry(Factory.Registry factoryRegistry) {
-		this.factoryRegistry = factoryRegistry;
+		super.setResourceFactoryRegistry(factoryRegistry);
 	}
 
-	void unsetResourceFactoryRegistry(Factory.Registry factoryRegistry) {
+	protected void unsetResourceFactoryRegistry(Factory.Registry factoryRegistry) {
 		this.factoryRegistry = null;
 	}
 
-	@Override
-	public Factory.Registry getResourceFactoryRegistry() {
-		return factoryRegistry;
+	@Reference(name = EmfOsgiApi.ResourceSet.Reference.ADAPTER_FACTORY, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.MULTIPLE)
+	protected void setAdapterFactory(AdapterFactory adapterFactory) {
+		getAdapterFactories().add(adapterFactory);
+	}
+
+	protected void unsetAdapterFactory(AdapterFactory adapterFactory) {
+		getAdapterFactories().remove(adapterFactory);
+	}
+
+	@Reference(name = EmfOsgiApi.ResourceSet.Reference.RESOURCE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.MULTIPLE)
+	protected void setResource(Resource resource) {
+		getResources().add(resource);
+	}
+
+	protected void unsetResource(Resource resource) {
+		getResources().remove(resource);
 	}
 
 	private String servicePid = EmfOsgiApi.ResourceSet.PID;
-
-	@Activate
-	void activate(Map<String, Object> properties) {
-		this.servicePid = (String) properties.get(Constants.SERVICE_PID);
-	}
 
 	@Override
 	public String toString() {
 		return servicePid;
 	}
 
+	@Activate
+	protected void activate(Map<String, Object> properties) {
+		Optional.ofNullable((String) properties.get(Constants.SERVICE_PID)).ifPresent(pid -> this.servicePid = pid);
+	}
 }
