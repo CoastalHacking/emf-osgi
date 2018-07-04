@@ -1,0 +1,12 @@
+<settings>
+	<servers>
+		<server>
+			<!-- id is scheme:host:port -->
+			<id>https://dl.bintray.com/coastalhacking/emf-osgi</id>
+			<!--  TODO: create a generic user account -->
+			<username>jonpasski</username>
+			<!--  Refer to the Bintray API key -->
+			<password>${env;BINTRAY_API_KEY}</password>
+		</server>
+	</servers>
+</settings> 

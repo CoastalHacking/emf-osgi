@@ -1,6 +1,13 @@
 sudo: false
-
 language: java
-
 jdk:
-  - oraclejdk8
+- oraclejdk8
+env:
+  global:
+    secure: boS4SsdzJpSVGdO2OsOG8dsQX+tEYlIK8UPWt0b6kqbyqJsdf9Cgh4+dA4iBwl5QxUYPy0Zgw12Lk7WZbEVwlvSUS5dOP6S18YcbLcLCXJLsDxBksLbhqDNx2XaEAShi63VW9+a9CXp9STkXScnBPHG9q6RB0cPVffluKZUVNy+Ns/lvdK6ZGEGwDfHAclBFkr3Q0n+jWyVAMOk36VBzRa5COZajjp+ySkBQ8wzQs5D/asdy27THlC8riZJoeQDW0nac6JzJqM3nQPiUSL3Ef/BHFp4VaJoCqh+Rm0cryqGhqf9POmTYz0b6bjNkLxLLGCLNNXWi58NwDpEMmUmx3qELxXQaDpffBSDNR7nXsLRaEPBuCB3ni++JW9vprH01jxpUFsuHAVS+zRNgOAU5/7bT9DA7teCJzLZpkIWO7zbRiIfpvnkkSkO3x1POJLOdIATufc2ry7oJNBiVxU/kg4U1SRmdHf+Fc6OBtpqTwKUTIyiVC7FHVrjjjbdEUP+VPXLLJaiVnTB2tIdfwQjIBTyUljOnCASY+7TzTyZUHsk89Tm77LAY5o8i8q2AE5vXbArTkTs0rE8ZkQIw+uDA6phNexaQJnN3JqgkOGnGjkXPwfxyiB3RaGY+9Hc0T4gJZHdR2fFMG3M3aT2jZHzIFq0m4fkPRHyiDFIDngRojbo=
+deploy:
+  provider: script
+  script: ./gradlew release
+  skip_cleanup: true
+  on:
+    tags: true

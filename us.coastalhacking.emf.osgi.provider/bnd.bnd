@@ -14,5 +14,7 @@
 javac.source: 1.8
 javac.target: 1.8
 
-Bundle-Version: 0.1.0.${tstamp}
+Bundle-Version: 0.1.0.SNAPSHOT
 Private-Package: us.coastalhacking.emf.osgi.provider
+	
+-pom: true

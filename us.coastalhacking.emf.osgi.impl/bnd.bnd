@@ -17,6 +17,9 @@
 javac.source: 1.8
 javac.target: 1.8
 
-Bundle-Version: 0.1.0.${tstamp}
+Bundle-Version: 0.1.0.SNAPSHOT
 
-Export-Package: us.coastalhacking.emf.osgi.impl
+Export-Package: \
+	us.coastalhacking.emf.osgi.impl
+
+-pom: true
