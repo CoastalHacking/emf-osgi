@@ -3,54 +3,18 @@
 
 ## EmfOsgiApi
 
-Consists of an API implemented via annotation types.
+Consists of an API implemented via annotation types focusing on OSGi:
 
-### Services Consumed by Providers
+* Service configuration properties
+* Component service references
+* And Configuration Admin PIDs
 
-Given the following:
-
-```java
-	/**
-	 * @see org.eclipse.emf.ecore.resource.Resource.Factory
-	 */
-	@interface Resource_Factory {
-		String emf_resource_factory_scheme();
-
-		String emf_resource_factory_extension();
-		
-		String emf_resource_factory_contenttype();
-	}
-```
-
-Using the OSGi `_` &rarr; `.` convention, the above annotation type `Resource_Factory` conveys there are three properties consumers of the service `org.eclipse.emf.ecore.resource.Resource.Factory` expect:
-
-* A property name `emf.resource.factory.scheme` with the type returned by `emf_resource_factory_scheme()`: `String`.
-* A property name  `emf.resource.factory.extension` of type `String`
-* A property name  `emf.resource.factory.contenttype` of type `String`
-
-For convenience, these property names are also specified as constants:
-
-```java
-	String SCHEME = "emf.resource.factory.scheme";
-	String EXTENSION = "emf.resource.factory.extension";
-	String CONTENT_TYPE = "emf.resource.factory.contenttype";
-```
-
-### Provider Implementing the API
+### Providers Implementing the API
 
 The API conveys the following for Declarative Service providers:
 
-* Service configuration property names and return type and to use by providers, see above section.
-* Reference names via nested annotation types matching `@interface Reference` expected to be used by a provider via its `@Reference(name = ...)` annotation. When utilized, bundles creating a service factory configuration can also use these names as targets, which would be included in the properties provided to Configuration Admin.
-* Service factory PID used by the provider via its `@Component(configurationPid=...)` annotation.
-
-Any provider-focused annotation type that has one or more methods is called a "component property type" (OSGi R6 Compendium §112.8.2). Providers are encouraged to use these component property types via their `@Activate`, `@Modified`, and/or `@Deactivate` methods, like so:
-
-```java
-	@Activate
-	void activate(EmfOsgiApi.URIConverter config) {
-	  // ...
-	}
-```
+* Service configuration property names. Values are strings.
+* Reference names via nested annotation types matching `@interface Reference`. They should be used by providers via `@Reference(name = ...)` declarative service annotations. When utilized, bundles creating a service factory configuration via Configuration Admin can also use these names as targets. These are then included in the properties provided to Configuration Admin.
+* Service factory PID used by the provider via its `@Component(configurationPid=...)` annotation. When no configurations are present, these are also the configuration PIDs.
 
  

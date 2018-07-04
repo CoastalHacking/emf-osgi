@@ -61,7 +61,7 @@ public class ConcurrentUriConverterImpl extends ExtensibleURIConverterImpl {
 	 * (non-Javadoc)
 	 * 
 	 * Setting needs to occur in getter since super calls getter during its ctor.
-	 * Since it's called during the base ctor should not need to be atomic.
+	 * Since it's called during the base ctor, it should not need to be atomic.
 	 * 
 	 * @see
 	 * org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl#getURIHandlers

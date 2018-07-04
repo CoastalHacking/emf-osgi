@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceFactoryRegistryImpl;
 
 public class ConcurrentResourceFactoryRegistryImpl extends ResourceFactoryRegistryImpl {
 
+	// Mask and declare as volatile
 	protected volatile URIConverter uriConverter;
 
 	public ConcurrentResourceFactoryRegistryImpl() {

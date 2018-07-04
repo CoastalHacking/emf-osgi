@@ -1,13 +1,9 @@
 package us.coastalhacking.emf.osgi.provider;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.common.util.DelegatingEList;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.Resource.Factory;
@@ -28,22 +24,6 @@ import us.coastalhacking.emf.osgi.impl.ConcurrentResourceSetImpl;
 @Component(configurationPid = EmfOsgiApi.ResourceSet.PID, configurationPolicy = ConfigurationPolicy.OPTIONAL, service = ResourceSet.class)
 public class ResourceSetProvider extends ConcurrentResourceSetImpl {
 
-	// mask, declared as volatile
-	protected volatile URIConverter converter;
-	protected volatile EPackage.Registry ePackageRegistry;
-	protected volatile Factory.Registry factoryRegistry;
-
-	protected final EList<AdapterFactory> delegatingFactories = new DelegatingEList<AdapterFactory>() {
-
-		private static final long serialVersionUID = 1L;
-		private final List<AdapterFactory> adapterFactories = new CopyOnWriteArrayList<>();
-
-		@Override
-		protected List<AdapterFactory> delegateList() {
-			return adapterFactories;
-		}
-	};
-
 	@Reference(name = EmfOsgiApi.ResourceSet.Reference.URI_CONVERTER, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
 	@Override
 	public void setURIConverter(URIConverter uriConverter) {
@@ -53,7 +33,7 @@ public class ResourceSetProvider extends ConcurrentResourceSetImpl {
 	protected void unsetURIConverter(URIConverter converter) {
 		// Do not delegate to global instance
 		// This varies from ResourceSetImpl since it's now nullable
-		this.converter = null;
+		super.setURIConverter(null);
 	}
 
 	@Reference(name = EmfOsgiApi.ResourceSet.Reference.EPACKAGE_REGISTRY, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
@@ -63,7 +43,7 @@ public class ResourceSetProvider extends ConcurrentResourceSetImpl {
 	}
 
 	protected void unsetPackageRegistry(EPackage.Registry packageRegistry) {
-		this.ePackageRegistry = null;
+		super.setPackageRegistry(null);
 	}
 
 	@Reference(name = EmfOsgiApi.ResourceSet.Reference.RESOURCE_FACTORY_REGISTRY, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
@@ -73,7 +53,7 @@ public class ResourceSetProvider extends ConcurrentResourceSetImpl {
 	}
 
 	protected void unsetResourceFactoryRegistry(Factory.Registry factoryRegistry) {
-		this.factoryRegistry = null;
+		super.setResourceFactoryRegistry(null);
 	}
 
 	@Reference(name = EmfOsgiApi.ResourceSet.Reference.ADAPTER_FACTORY, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.MULTIPLE)

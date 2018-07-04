@@ -48,7 +48,7 @@ public class EPackageRegistryProvider extends ConcurrentEPackageRegistryImpl {
 	}
 
 	protected void unsetDelegateRegistry(Registry delegateRegistry) {
-		this.delegateRegistry = null;
+		super.setDelegateRegistry(null);
 	}
 
 	protected Optional<String> getUri(Map<String, Object> properties) {
@@ -62,7 +62,6 @@ public class EPackageRegistryProvider extends ConcurrentEPackageRegistryImpl {
 		return result;
 	}
 
-	// Does not need to be volatile since it's set in @Activate
 	private String servicePid = EmfOsgiApi.EPackage_Registry.PID;
 
 	@Override

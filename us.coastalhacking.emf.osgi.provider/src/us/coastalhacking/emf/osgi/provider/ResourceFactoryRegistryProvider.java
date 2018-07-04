@@ -23,11 +23,11 @@ public class ResourceFactoryRegistryProvider extends ConcurrentResourceFactoryRe
 
 	@Reference(name = EmfOsgiApi.Resource_Factory_Registry.Reference.URI_CONVERTER, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
 	protected void setUriConverter(URIConverter uriConverter) {
-		this.uriConverter = uriConverter;
+		super.setUriConverter(uriConverter);
 	}
 
 	protected void unsetUriConverter(URIConverter uriConverter) {
-		this.uriConverter = null;
+		super.setUriConverter(null);
 	}
 
 	private void putIntoFactoryMap(Map<String, Object> properties, String factoryType, Map<String, Object> factoryMap,

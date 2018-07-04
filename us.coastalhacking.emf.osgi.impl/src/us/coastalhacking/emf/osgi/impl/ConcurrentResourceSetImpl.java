@@ -105,9 +105,7 @@ public class ConcurrentResourceSetImpl extends ResourceSetImpl {
 	protected volatile EPackage.Registry ePackageRegistry;
 	protected volatile Factory.Registry factoryRegistry;
 
-	// TODO
-//	org.eclipse.emf.ecore.resource.ResourceSet.getLoadOptions()
-
+	// Hide?
 	protected List<AdapterFactory> delegateAdapterFactories;
 	protected List<Resource> delegateResources;
 
