@@ -19,7 +19,7 @@
 
 -plugin.4.Release: \
 	aQute.bnd.repository.maven.provider.MavenBndRepository; \
-		releaseUrl=https://dl.bintray.com/coastalhacking/emf-osgi; \
+		releaseUrl="https://api.bintray.com/maven/coastalhacking/emf-osgi/us.coastalhacking.emf.osgi/;publish=1"; \
 		index=${.}/release.maven; \
 		name="Release"
 
