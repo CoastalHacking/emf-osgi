@@ -49,7 +49,7 @@ javac.target: 1.8
 	us.coastalhacking.emf.osgi.test;version=snapshot,\
 	us.coastalhacking.emf.osgi.impl;version=snapshot
 
-Bundle-Version: 0.0.0.${tstamp}
+Bundle-Version: 0.1.0.${tstamp}
 Private-Package: us.coastalhacking.emf.osgi.test
 
 # Needed for Mockito's mocking to work
