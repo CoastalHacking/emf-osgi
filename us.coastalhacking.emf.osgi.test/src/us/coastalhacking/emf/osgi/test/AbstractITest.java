@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -15,6 +17,8 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.cm.ConfigurationEvent;
+import org.osgi.service.cm.ConfigurationListener;
 import org.osgi.util.tracker.ServiceTracker;
 
 public abstract class AbstractITest {
@@ -28,6 +32,7 @@ public abstract class AbstractITest {
 	protected static final List<ServiceTracker<?, ?>> staticServiceTrackers = new CopyOnWriteArrayList<>();
 	protected final List<ServiceRegistration<?>> serviceRegistrations = new CopyOnWriteArrayList<>();
 	protected final List<Configuration> configurations = new CopyOnWriteArrayList<>();
+	protected final Map<String, CompletableFuture<Void>> configurationFutures = new ConcurrentHashMap<>();
 
 	protected static final long timeout = 1000; // milliseconds;
 	protected static final Hashtable<String, Object> customProps = new Hashtable<>();
@@ -54,9 +59,32 @@ public abstract class AbstractITest {
 		assertTrue(serviceTrackers.isEmpty());
 		assertTrue(serviceRegistrations.isEmpty());
 		assertTrue(configurations.isEmpty());
+
+		// Register our per-test listener
+		serviceRegistrations.add(CONTEXT.registerService(org.osgi.service.cm.ConfigurationListener.class,
+				new TestCaseConfigurationListener(), null));
+
 	}
 
 	public void after() throws Exception {
+		// First delete the configurations
+		configurations.forEach(c -> {
+			try {
+				c.delete();
+			} catch (Exception e) {
+
+				e.printStackTrace();
+			}
+		});
+
+		CompletableFuture<Void> combinedFuture = CompletableFuture
+				.allOf(configurationFutures.values().stream().toArray(CompletableFuture[]::new));
+		// block until all the configurations are deleted
+		combinedFuture.get();
+		configurations.clear();
+
+		// Then delete the registrations. Reversing these results in the configuration
+		// listener being deleted prematurely
 		serviceRegistrations.forEach(sr -> {
 			try {
 				sr.unregister();
@@ -70,14 +98,6 @@ public abstract class AbstractITest {
 		});
 		serviceTrackers.clear();
 
-		configurations.forEach(c -> {
-			try {
-				c.delete();
-			} catch (Exception e) {
-				// gobble
-			}
-		});
-		configurations.clear();
 	}
 
 	protected <T> T serviceTrackerHelper(ServiceTracker<?, T> st, long timeout) throws Exception {
@@ -130,6 +150,7 @@ public abstract class AbstractITest {
 		// Create the configuration
 		final Configuration configuration = configAdmin.createFactoryConfiguration(factoryPid, "?");
 		configurations.add(configuration);
+		configurationFutures.put(configuration.getPid(), new CompletableFuture<>());
 		// Updating it with the passed-in properties
 		configuration.update(new Hashtable<>(props));
 		// Strictly return the specific service, ensuring the desired properties are
@@ -138,4 +159,14 @@ public abstract class AbstractITest {
 		return serviceTrackerHelper(new ServiceTracker<>(CONTEXT, CONTEXT.createFilter(filter), null), timeout);
 	}
 
+	protected class TestCaseConfigurationListener implements ConfigurationListener {
+
+		@Override
+		public void configurationEvent(ConfigurationEvent event) {
+			if (event.getType() == ConfigurationEvent.CM_DELETED) {
+				configurationFutures.get(event.getPid()).complete(null);
+			}
+		}
+
+	}
 }
