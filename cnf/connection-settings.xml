@@ -2,7 +2,7 @@
 	<servers>
 		<server>
 			<!-- id is scheme:host:port -->
-			<id>https://dl.bintray.com/coastalhacking/emf-osgi</id>
+			<id>https://api.bintray.com/maven/coastalhacking/emf-osgi/us.coastalhacking.emf.osgi/;publish=1</id>
 			<!--  TODO: create a generic user account -->
 			<username>jonpasski</username>
 			<!--  Refer to the Bintray API key -->
