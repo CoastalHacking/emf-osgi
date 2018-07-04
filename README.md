@@ -1,6 +1,8 @@
 
 # EMF OSGi
 
+[![Build Status](https://travis-ci.org/CoastalHacking/emf-osgi.svg?branch=master)](https://travis-ci.org/CoastalHacking/emf-osgi)
+
 This bundle consists of an API used by OSGi providers to enable concurrent, dynamic configuration of the following:
 
 * `org.eclipse.emf.ecore.resource.URIConverter`
