@@ -42,7 +42,10 @@ mockito: org.mockito.mockito-core;version="[2.1,3)",\
   net.bytebuddy.byte-buddy;version="[1.7.10,1.7.11)",\
   net.bytebuddy.byte-buddy-agent;version="[1.7.10,1.7.11)"
 
--connection-settings: ${.}/connection-settings.xml
+repo_pw = ${env;REPOSITORY_PASSWORD;}
+repo_user = ${env;REPOSITORY_USERNAME;}
+-connection-settings: ${if;${repo_pw};server;-dummy};id=https://api.bintray.com;username=${repo_user};password=${repo_pw}, -bnd
+
 # Disable until releasing
 -snapshot: ${tstamp}
 -groupid: us.coastalhacking.emf.osgi
